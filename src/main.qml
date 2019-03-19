@@ -1,7 +1,8 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
-import dev.birchy.Purple 1.0
+import QtQuick.Dialogs 1.3
 import QtQuick.Window 2.12
+import dev.birchy.Purple 1.0
 
 Window {
     id: app
@@ -35,6 +36,32 @@ Window {
         }
     }
 
+    Dialog {
+        id: sayBox
+        standardButtons: StandardButton.Ok
+        onAccepted: {
+            monkeyFella.say(sayTextField.text)
+            sayTextField.text = ""
+        }
+
+        contentItem: Rectangle {
+            TextArea {
+                id: sayTextField
+                width: parent.width
+                height: Screen.pixelDensity * font.pointSize
+            }
+
+            Button {
+                anchors.top: sayTextField.bottom
+                text: "OK"
+                width: parent.width
+                onClicked: {
+                    sayBox.accept()
+                }
+            }
+        }
+    }
+
     MouseArea {
         property point dragPos: Qt.point(0,0)
 
@@ -58,6 +85,12 @@ Window {
 
         Menu {
             id: menu
+            MenuItem {
+                text: "Say"
+                onClicked: {
+                    sayBox.open()
+                }
+            }
             MenuItem {
                 text: "Tell me a joke"
                 onClicked: {
