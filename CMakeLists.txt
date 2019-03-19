@@ -11,9 +11,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Core Quick TextToSpeech REQUIRED)
 
 add_executable ( ${PROJECT_NAME}
-    "main.cpp"
-    "qml.qrc"
-    "speech.cpp"
+    src/main.cpp
+    src/qml.qrc
+    src/speech.cpp
     )
 
 target_compile_definitions ( ${PROJECT_NAME} PRIVATE
