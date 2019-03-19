@@ -1,5 +1,4 @@
-#ifndef SPEECH_H
-#define SPEECH_H
+#pragma once
 
 #include <QObject>
 #include <QTextToSpeech>
@@ -7,22 +6,20 @@
 class Speech : public QObject
 {
     Q_OBJECT
-public:
-    explicit Speech(QObject *parent = nullptr);
+  public:
+    explicit Speech(QObject* parent = nullptr);
     virtual ~Speech();
 
-signals:
+  signals:
     void started();
     void stopped();
 
-public slots:
+  public slots:
     void say(QString const& sentence);
 
-private slots:
+  private slots:
     void voiceStateChange(QTextToSpeech::State state);
 
-private:
+  private:
     QTextToSpeech* m_speech;
 };
-
-#endif // SPEECH_H

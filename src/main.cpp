@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 
 #include "speech.h"
+#include "randomevents.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,7 +12,8 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    qmlRegisterType<Speech>("dev.birchy.Speech", 1, 0, "Speech");
+    qmlRegisterType<Speech>("dev.birchy.Purple", 1, 0, "Speech");
+    qmlRegisterType<RandomEvents>("dev.birchy.Purple", 1, 0, "RandomEvents");
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

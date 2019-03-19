@@ -59,6 +59,7 @@
         <file>../monkey_fella/speech/0005.png</file>
         <file>../monkey_fella/speech/0006.png</file>
         <file>../monkey_fella/speech/0007.png</file>
+        <file>MonkeyFella.qml</file>
     </qresource>
     <qresource prefix="/monkey"/>
 </RCC>

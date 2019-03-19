@@ -14,6 +14,7 @@ add_executable ( ${PROJECT_NAME}
     src/main.cpp
     src/qml.qrc
     src/speech.cpp
+    src/randomevents.cpp
     )
 
 target_compile_definitions ( ${PROJECT_NAME} PRIVATE
