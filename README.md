@@ -7,3 +7,7 @@ That's right, he's coming back.
 This time, stronger than before.
 
 And also cross-platform.
+
+# A sneak peek
+
+![A purple monkey just mocking you](/preview/bonzi.gif)
