@@ -31,8 +31,13 @@ Window {
 
     RandomEvents {
         id: random
+        interval: 10000
         onNewEvent: {
-            console.log("*says something funny*")
+            if(monkeyFella.busy)
+                return;
+
+//            monkeyFella.animSunglasses.start()
+            monkeyFella.animChuckle.start()
         }
     }
 
@@ -114,7 +119,11 @@ Window {
             MenuItem {
                 text: "Go away"
                 onClicked: {
-                    app.close()
+//                    app.close()
+                    if(monkeyFella.busy)
+                        return;
+
+                    monkeyFella.animSunglasses.start()
                 }
             }
         }

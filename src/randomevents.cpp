@@ -4,9 +4,12 @@
 RandomEvents::RandomEvents(QObject* parent) :
     QObject(parent), m_timer(new QTimer(this))
 {
+    connect(this, &RandomEvents::intervalChanged, [&](int interval) {
+        m_timer->setInterval(std::chrono::milliseconds(interval));
+    });
     connect(m_timer, &QTimer::timeout, [&]() { newEvent(); });
 
-    m_timer->setInterval(std::chrono::seconds(5));
+    setInterval(5000);
 }
 
 RandomEvents::~RandomEvents()

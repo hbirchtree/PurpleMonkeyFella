@@ -60,6 +60,43 @@
         <file>../monkey_fella/speech/0006.png</file>
         <file>../monkey_fella/speech/0007.png</file>
         <file>MonkeyFella.qml</file>
+        <file>../monkey_fella/blinking/regular/0026.png</file>
+        <file>../monkey_fella/blinking/regular/0027.png</file>
+        <file>../monkey_fella/random/sunglasses/0442.png</file>
+        <file>../monkey_fella/random/sunglasses/0446.png</file>
+        <file>../monkey_fella/random/sunglasses/0449.png</file>
+        <file>../monkey_fella/random/sunglasses/0454.png</file>
+        <file>../monkey_fella/random/sunglasses/0466.png</file>
+        <file>../monkey_fella/random/sunglasses/0450.png</file>
+        <file>../monkey_fella/random/sunglasses/0444.png</file>
+        <file>../monkey_fella/random/sunglasses/0447.png</file>
+        <file>../monkey_fella/random/sunglasses/0456.png</file>
+        <file>../monkey_fella/random/sunglasses/0460.png</file>
+        <file>../monkey_fella/random/sunglasses/0448.png</file>
+        <file>../monkey_fella/random/sunglasses/0467.png</file>
+        <file>../monkey_fella/random/sunglasses/0453.png</file>
+        <file>../monkey_fella/random/sunglasses/0457.png</file>
+        <file>../monkey_fella/random/sunglasses/0462.png</file>
+        <file>../monkey_fella/random/sunglasses/0451.png</file>
+        <file>../monkey_fella/random/sunglasses/0458.png</file>
+        <file>../monkey_fella/random/sunglasses/0455.png</file>
+        <file>../monkey_fella/random/sunglasses/0440.png</file>
+        <file>../monkey_fella/random/sunglasses/0463.png</file>
+        <file>../monkey_fella/random/sunglasses/0452.png</file>
+        <file>../monkey_fella/random/sunglasses/0459.png</file>
+        <file>../monkey_fella/random/sunglasses/0441.png</file>
+        <file>../monkey_fella/random/sunglasses/0443.png</file>
+        <file>../monkey_fella/random/sunglasses/0464.png</file>
+        <file>../monkey_fella/random/sunglasses/0439.png</file>
+        <file>../monkey_fella/random/sunglasses/0445.png</file>
+        <file>../monkey_fella/random/sunglasses/0461.png</file>
+        <file>../monkey_fella/random/sunglasses/0465.png</file>
+        <file>../monkey_fella/random/sunglasses/0438.png</file>
+        <file>../monkey_fella/random/chuckle/1019.png</file>
+        <file>../monkey_fella/random/chuckle/1020.png</file>
+        <file>../monkey_fella/random/chuckle/1021.png</file>
+        <file>../monkey_fella/random/chuckle/1022.png</file>
+        <file>../monkey_fella/random/chuckle/1023.png</file>
     </qresource>
     <qresource prefix="/monkey"/>
 </RCC>
