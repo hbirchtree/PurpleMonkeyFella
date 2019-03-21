@@ -6,13 +6,19 @@ Image {
     property int frameCount: 1139
     property bool busy: true /* He starts off busy, to avoid problems */
 
-    property SequentialAnimation animSunglasses: sunglasses
-    property SequentialAnimation animChuckle: chuckle
+    property Animation animSunglasses: sunglasses
+    property Animation animChuckle: chuckle
+    property Animation animMrWorldwide: worldwide
+    property Animation animHush: hushing
+    property Animation animGrin: grin
+
+    signal playAnimation(Animation anim)
 
     signal ohLawdHeComin()
     signal ohLawdHeGone()
-    signal revertLook()
+
     signal animStart()
+    signal revertLook()
 
     signal say(string sentence)
 
@@ -32,15 +38,26 @@ Image {
         variant = "keyframes"
         frameCount = 0
         busy = false
+        blink.start()
+    }
+    onAnimStart: {
+        monkeyOverlay.visible = false
+        blink.stop()
     }
     onRevertLook: {
         variant = "keyframes"
         frameCount = 0
         busy = false
         monkeyOverlay.visible = false
+
+        blink.start()
     }
-    onAnimStart: {
+    onPlayAnimation: {
+        if(busy)
+            return;
         busy = true
+
+        anim.start()
     }
 
     id: mainImage
@@ -55,13 +72,10 @@ Image {
         id: voice
 
         onStarted: {
-            talk.start()
-            busy = true
+            playAnimation(talk)
         }
         onStopped: {
             talk.stop()
-            monkeyOverlay.visible = false
-            busy = false
         }
     }
 
@@ -94,6 +108,52 @@ Image {
         onFrameCountChanged: {
             source = "qrc:/monkey_fella/" + variant
                     + "/" + ('000' + frameCount).slice(-4) + ".png"
+        }
+    }
+
+    /* Blinking while idle */
+    SequentialAnimation {
+        id: blink
+        loops: Animation.Infinite
+        running: false
+
+        PropertyAction {
+            target: monkeyOverlay; property: "visible"
+            value: true
+        }
+        PropertyAction {
+            target: monkeyOverlay; property: "variant"
+            value: "blinking/regular"
+        }
+
+        PropertyAction {
+            target: monkeyOverlay; property: "frameCount"
+            value: 26
+        }
+        PauseAnimation {
+            duration: 100
+        }
+        PropertyAction {
+            target: monkeyOverlay; property: "frameCount"
+            value: 27
+        }
+        PauseAnimation {
+            duration: 100
+        }
+        PropertyAction {
+            target: monkeyOverlay; property: "frameCount"
+            value: 26
+        }
+        PauseAnimation {
+            duration: 100
+        }
+
+        ScriptAction {
+            script: revertLook()
+        }
+
+        PauseAnimation {
+            duration: 5000
         }
     }
 
@@ -278,6 +338,207 @@ Image {
             from: 1023
             to: 1019
             duration: 400
+        }
+
+        ScriptAction {
+            script: revertLook()
+        }
+    }
+
+    /* Mr Worldwide */
+    SequentialAnimation {
+        id: worldwide
+        running: false
+
+        ScriptAction {
+            script: animStart()
+        }
+
+        PropertyAction {
+            target: mainImage; property: "variant"
+            value: "random/mr_worldwide"
+        }
+
+        /* Pick up the world */
+        PropertyAnimation {
+            target: mainImage
+            property: "frameCount"
+            from: 260
+            to: 264
+            duration: 500
+        }
+
+        /* Setup for spinning the world */
+        PropertyAction {
+            target: mainImage; property: "variant"
+            value: "random/mr_worldwide/looking"
+        }
+        PropertyAction {
+            target: monkeyOverlay; property: "variant"
+            value: "random/mr_worldwide/world"
+        }
+        PropertyAction {
+            target: mainImage; property: "frameCount"
+            value: 0
+        }
+        PropertyAction {
+            target: monkeyOverlay; property: "frameCount"
+            value: 0
+        }
+        PropertyAction {
+            target: monkeyOverlay; property: "visible"
+            value: true
+        }
+
+        /* Say it */
+        ScriptAction {
+            script: voice.say("Mr Worldwide")
+        }
+
+        /* Let it spin */
+        ParallelAnimation {
+            loops: 10
+
+            PropertyAnimation {
+                target: mainImage
+                property: "frameCount"
+                from: 0
+                to: 7
+                duration: 2000
+            }
+            PropertyAnimation {
+                target: monkeyOverlay
+                property: "frameCount"
+                from: 0
+                to: 23
+                duration: 2000
+            }
+        }
+
+        /* Hide the globe */
+        PropertyAction {
+            target: monkeyOverlay; property: "visible"
+            value: false
+        }
+
+        /* Put it down */
+        PropertyAction {
+            target: mainImage; property: "variant"
+            value: "random/mr_worldwide"
+        }
+        PropertyAnimation {
+            target: mainImage
+            property: "frameCount"
+            from: 264
+            to: 260
+            duration: 500
+        }
+
+        ScriptAction {
+            script: revertLook()
+        }
+    }
+
+    /* Hushing (wait what?) */
+    SequentialAnimation {
+        id: hushing
+        running: false
+
+        ScriptAction {
+            script: animStart()
+        }
+
+        PropertyAction {
+            target: mainImage; property: "variant"
+            value: "random/hushing"
+        }
+
+        /* Lean in... */
+        PropertyAnimation {
+            target: mainImage
+            property: "frameCount"
+            from: 1110
+            to: 1114
+            duration: 500
+        }
+
+        /* Now you listen here... */
+        PauseAnimation {
+            duration: 1000
+        }
+
+        /* Nah jk */
+        PropertyAnimation {
+            target: mainImage
+            property: "frameCount"
+            from: 1114
+            to: 1110
+            duration: 500
+        }
+
+        ScriptAction {
+            script: revertLook()
+        }
+    }
+
+    /* Normal grin */
+    SequentialAnimation {
+        id: grin
+        running: false
+
+        ScriptAction {
+            script: animStart()
+        }
+
+        PropertyAction {
+            target: mainImage; property: "variant"
+            value: "random/grin"
+        }
+
+        PropertyAnimation {
+            target: mainImage
+            property: "frameCount"
+            from: 1073
+            to: 1075
+            duration: 500
+        }
+
+        SequentialAnimation {
+            PropertyAction {
+                target: monkeyOverlay; property: "variant"
+                value: "random/grin"
+            }
+            PropertyAction {
+                target: monkeyOverlay; property: "visible"
+                value: true
+            }
+
+            PropertyAnimation {
+                target: monkeyOverlay
+                property: "frameCount"
+                from: 1076
+                to: 1082
+                duration: 600
+            }
+            PropertyAnimation {
+                target: monkeyOverlay
+                property: "frameCount"
+                from: 1082
+                to: 1076
+                duration: 600
+            }
+            PropertyAction {
+                target: monkeyOverlay; property: "visible"
+                value: false
+            }
+        }
+
+        PropertyAnimation {
+            target: mainImage
+            property: "frameCount"
+            from: 1075
+            to: 1073
+            duration: 500
         }
 
         ScriptAction {
