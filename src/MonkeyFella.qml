@@ -135,10 +135,6 @@ Image {
             target: mainImage; property: "variant"
             value: "random/sunglasses"
         }
-        PropertyAction {
-            target: monkeyOverlay; property: "visible"
-            value: true
-        }
 
         PropertyAnimation {
             target: mainImage
@@ -157,6 +153,10 @@ Image {
             PropertyAction {
                 target: monkeyOverlay; property: "variant"
                 value: "random/sunglasses"
+            }
+            PropertyAction {
+                target: monkeyOverlay; property: "visible"
+                value: true
             }
 
             /* Dramatic pause */
