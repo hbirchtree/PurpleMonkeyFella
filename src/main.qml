@@ -103,6 +103,9 @@ Window {
             MenuItem {
                 text: "Say"
                 onClicked: {
+                    if(monkeyFella.busy)
+                        return;
+
                     sayBox.open()
                 }
             }

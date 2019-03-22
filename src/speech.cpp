@@ -1,10 +1,19 @@
 #include "speech.h"
+#include <QVoice>
+#include <QVector>
 
 Speech::Speech(QObject* parent) :
     QObject(parent), m_speech(new QTextToSpeech(this))
 {
+#if defined(Q_OS_MAC)
+    m_speech->setPitch(-1);
+    m_speech->setRate(-1);
+
+    m_speech->setVoice(m_speech->availableVoices().at(0));
+#else
     m_speech->setPitch(-1.);
     m_speech->setRate(-1.);
+#endif
 
     connect(
         m_speech,
