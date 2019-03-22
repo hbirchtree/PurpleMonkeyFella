@@ -35,10 +35,7 @@ Image {
         heCometh.stopped.connect(ohLawdHeGone)
     }
     onOhLawdHeGone: {
-        variant = "keyframes"
-        frameCount = 0
-        busy = false
-        blink.start()
+        revertLook()
     }
     onAnimStart: {
         monkeyOverlay.visible = false
@@ -55,6 +52,9 @@ Image {
     onPlayAnimation: {
         if(busy)
             return;
+
+        console.log("starting animation")
+
         busy = true
 
         anim.start()
@@ -75,7 +75,11 @@ Image {
             playAnimation(talk)
         }
         onStopped: {
-            talk.stop()
+            if(talk.running)
+            {
+                talk.stop()
+                revertLook()
+            }
         }
     }
 
@@ -180,6 +184,9 @@ Image {
             from: 2
             to: 7
             duration: 1000
+        }
+        ScriptAction {
+            script: revertLook()
         }
     }
 
