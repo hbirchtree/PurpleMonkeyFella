@@ -10,6 +10,11 @@ Speech::Speech(QObject* parent) :
     m_speech->setRate(-1);
 
     m_speech->setVoice(m_speech->availableVoices().at(0));
+
+#elif defined(Q_OS_WIN)
+    /* Pitches Microsoft David waaaay up */
+    m_speech->setPitch(20);
+    m_speech->setVoice(m_speech->availableVoices().at(0));
 #else
     m_speech->setPitch(-1.);
     m_speech->setRate(-1.);
