@@ -31,9 +31,23 @@ Window {
 
     RandomEvents {
         id: random
-        interval: 5000
+        interval: 6000
         onNewEvent: {
-            monkeyFella.playAnimation(monkeyFella.animGrin)
+            /* TODO: Pick random event */
+
+            var anims = [
+                        monkeyFella.animSunglasses,
+                        monkeyFella.animChuckle,
+                        monkeyFella.animMrWorldwide,
+                        monkeyFella.animHush,
+                        monkeyFella.animGrin,
+                    ];
+
+            monkeyFella.playAnimation(
+                        anims[random.randRange(0, anims.length - 1)])
+
+            random.interval = random.randRange(5 * 1000, 1 * 60 * 1000)
+            console.log("next event in ", interval)
         }
     }
 

@@ -495,6 +495,7 @@ Image {
             value: "random/grin"
         }
 
+        /* Opening his mouth */
         PropertyAnimation {
             target: mainImage
             property: "frameCount"
@@ -503,6 +504,7 @@ Image {
             duration: 500
         }
 
+        /* The sparkle */
         SequentialAnimation {
             PropertyAction {
                 target: monkeyOverlay; property: "variant"
@@ -533,6 +535,7 @@ Image {
             }
         }
 
+        /* Closing his mouth */
         PropertyAnimation {
             target: mainImage
             property: "frameCount"

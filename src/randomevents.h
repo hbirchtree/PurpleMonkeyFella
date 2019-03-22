@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <random>
 
 class RandomEvents : public QObject
 {
@@ -16,6 +17,8 @@ class RandomEvents : public QObject
     {
         return m_interval;
     }
+
+    Q_INVOKABLE int randRange(int start, int end);
 
 signals:
     void newEvent();
@@ -37,4 +40,6 @@ public slots:
 private:
     QTimer* m_timer;
     int m_interval;
+
+    std::mt19937 rand_engine;
 };
