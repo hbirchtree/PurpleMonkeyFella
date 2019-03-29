@@ -1,12 +1,12 @@
 # Basic install instructions
 
- - Download the installer from https://www.qt.io/download
+ - Download the Qt SDK installer from https://www.qt.io/download
 
  - For the most part, you need Qt 5.12.x or above. In the Qt installer, you specify:
    ![Selecting Qt 5.12.x](preview/installer.png)
    Only tick off the platforms you need, as each platform incurs a big download.
 
- - Once the installation is finished, clone the repository and open the directory in Qt Creator
+ - Once the installation is finished, clone the repository and open the directory in Qt Creator.
    Qt Creator should automatically open it as a CMake project.
 
 # Deployment??
