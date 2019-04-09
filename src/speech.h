@@ -2,6 +2,9 @@
 
 #include <QObject>
 #include <QTextToSpeech>
+#include <QNetworkAccessManager>
+#include <QAudioOutput>
+#include <QBuffer>
 
 class Speech : public QObject
 {
@@ -22,4 +25,9 @@ class Speech : public QObject
 
   private:
     QTextToSpeech* m_speech;
+    QNetworkAccessManager m_net;
+    QAudioOutput* m_output;
+
+    QBuffer* m_audioBuffer;
+    QByteArray m_currentBuffer;
 };

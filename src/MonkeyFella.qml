@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtMultimedia 5.12
 import dev.birchy.Purple 1.0
 
 Image {
