@@ -47,8 +47,9 @@ class Speech : public QObject
 #endif
 #if defined(PURPLE_AUDIOOUT)
     QAudioOutput* m_output;
-//    QNetworkReply* m_currentBuffer;
     QByteArray m_currentData;
     QBuffer* m_buffer;
+
+    QNetworkReply* m_currentBuffer;
 #endif
 };
