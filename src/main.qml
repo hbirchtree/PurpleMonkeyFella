@@ -112,7 +112,7 @@ Window {
             MenuItem {
                 text: "Tell me a joke"
                 onClicked: {
-                    monkeyFella.say("What did the beaver say to the tree?" +
+                    monkeyFella.say("What did the beaver say to the tree." +
                               " ... Nice gnawing you!")
                 }
             }

@@ -3,12 +3,19 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QAudioOutput>
-#include <QBuffer>
+
+#if defined(Q_OS_MAC_)
+#define PURPLE_QSOUND
+#else
+#define PURPLE_AUDIOOUT
+#endif
+
 #if defined(PURPLE_VOICE)
 #include <QTextToSpeech>
 #endif
 
 class QSoundEffect;
+class QBuffer;
 
 class Speech : public QObject
 {
@@ -30,13 +37,18 @@ class Speech : public QObject
 #endif
 
   private:
-#if defined(PURPLE_VOICE)
-//    QTextToSpeech* m_speech;
-#endif
     QNetworkAccessManager m_net;
-    QAudioOutput* m_output;
 
-    QBuffer* m_audioBuffer;
-    QByteArray m_currentBuffer;
+#if defined(PURPLE_VOICE)
+    QTextToSpeech* m_speech;
+#endif
+#if defined(PURPLE_QSOUND)
     QSoundEffect* m_currentSound;
+#endif
+#if defined(PURPLE_AUDIOOUT)
+    QAudioOutput* m_output;
+//    QNetworkReply* m_currentBuffer;
+    QByteArray m_currentData;
+    QBuffer* m_buffer;
+#endif
 };

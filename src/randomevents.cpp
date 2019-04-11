@@ -1,5 +1,6 @@
 #include "randomevents.h"
 #include <chrono>
+#include <ctime>
 
 RandomEvents::RandomEvents(QObject* parent) :
     QObject(parent), m_timer(new QTimer(this))
