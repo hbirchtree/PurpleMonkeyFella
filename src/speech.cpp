@@ -1,30 +1,45 @@
 #include "speech.h"
-#include <QVoice>
 #include <QVector>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QTemporaryFile>
+#include <QSoundEffect>
+#if defined(PURPLE_VOICE)
+#include <QVoice>
+#endif
+
 #include <QDebug>
 
 Speech::Speech(QObject* parent) :
-    QObject(parent), m_speech(new QTextToSpeech(this)), m_net(this), m_audioBuffer(nullptr)
+    QObject(parent),
+    #if defined(PURPLE_VOICE)
+    m_speech(new QTextToSpeech(this)),
+    #endif
+    m_net(this),
+    m_audioBuffer(nullptr),
+    m_currentSound(new QSoundEffect(this))
 {
-    QAudioFormat fmt;
-    fmt.setCodec("audio/pcm");
-    fmt.setChannelCount(1);
-    fmt.setSampleSize(16);
-    fmt.setSampleRate(44100);
-    fmt.setSampleType(QAudioFormat::UnSignedInt);
-    fmt.setByteOrder(QAudioFormat::LittleEndian);
+    connect(m_currentSound, &QSoundEffect::statusChanged, [&]() {
+        qDebug() << m_currentSound->status();
 
-    QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
+        switch(m_currentSound->status()) {
+        case QSoundEffect::Loading:
+            break;
+        case QSoundEffect::Ready:
+            m_currentSound->play();
+            this->started();
+            break;
+        case QSoundEffect::Error:
+            qDebug() << "Sadface";
+            break;
+        default:
+            break;
+        }
+    });
 
-    if(!info.isFormatSupported(fmt))
-        qDebug("reeee");
-
-    m_output = new QAudioOutput(fmt, this);
-
-    connect(m_output, &QAudioOutput::stateChanged, [&](QAudio::State state) {
-        qDebug() << state;
+    connect(m_currentSound, &QSoundEffect::playingChanged, [&]() {
+        if(!m_currentSound->isPlaying())
+            stopped();
     });
 
     connect(&m_net, &QNetworkAccessManager::finished,
@@ -46,19 +61,17 @@ Speech::Speech(QObject* parent) :
 
         qDebug("Got file");
 
-        if(m_audioBuffer)
-            m_audioBuffer->deleteLater();
+        QTemporaryFile soundDump("XXXXXXXXXXXXX.wav");
+        soundDump.setAutoRemove(false);
 
-        m_currentBuffer = reply->readAll();
-        m_audioBuffer = new QBuffer(&m_currentBuffer, this);
-
-        if(!m_audioBuffer->open(QIODevice::ReadOnly))
+        if(soundDump.open())
         {
-            qDebug("Failed to open buffer");
-            return;
-        }
+            soundDump.write(reply->readAll());
+            soundDump.close();
 
-        m_output->start(m_audioBuffer);
+            qDebug() << soundDump.fileName();
+            m_currentSound->setSource("file://" + soundDump.fileName());
+        }
     });
 }
 
@@ -68,7 +81,7 @@ Speech::~Speech()
 
 void Speech::say(const QString& sentence)
 {
-    m_output->stop();
+    m_currentSound->stop();
 
     QString cpy = sentence;
     QNetworkRequest req(QUrl(
@@ -79,6 +92,7 @@ void Speech::say(const QString& sentence)
     m_net.get(req);
 }
 
+#if defined(PURPLE_VOICE)
 void Speech::voiceStateChange(QTextToSpeech::State state)
 {
     switch(state)
@@ -98,3 +112,4 @@ void Speech::voiceStateChange(QTextToSpeech::State state)
         break;
     }
 }
+#endif

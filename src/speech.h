@@ -1,10 +1,14 @@
 #pragma once
 
 #include <QObject>
-#include <QTextToSpeech>
 #include <QNetworkAccessManager>
 #include <QAudioOutput>
 #include <QBuffer>
+#if defined(PURPLE_VOICE)
+#include <QTextToSpeech>
+#endif
+
+class QSoundEffect;
 
 class Speech : public QObject
 {
@@ -21,13 +25,18 @@ class Speech : public QObject
     void say(QString const& sentence);
 
   private slots:
+#if defined(PURPLE_VOICE)
     void voiceStateChange(QTextToSpeech::State state);
+#endif
 
   private:
-    QTextToSpeech* m_speech;
+#if defined(PURPLE_VOICE)
+//    QTextToSpeech* m_speech;
+#endif
     QNetworkAccessManager m_net;
     QAudioOutput* m_output;
 
     QBuffer* m_audioBuffer;
     QByteArray m_currentBuffer;
+    QSoundEffect* m_currentSound;
 };

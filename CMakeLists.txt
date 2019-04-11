@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(BonziRevolutions LANGUAGES CXX)
+project(PurpleMonkeyFella LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -20,6 +20,8 @@ add_executable ( ${PROJECT_NAME}
 target_compile_definitions ( ${PROJECT_NAME} PRIVATE
     $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>
     )
+
+set_property ( TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14 )
 
 target_link_libraries ( ${PROJECT_NAME} PRIVATE
     Qt5::Core

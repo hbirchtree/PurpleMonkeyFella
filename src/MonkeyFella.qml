@@ -53,10 +53,9 @@ Image {
     onPlayAnimation: {
         if(busy)
             return;
+        busy = true
 
         console.log("starting animation")
-
-        busy = true
 
         anim.start()
     }
