@@ -92,16 +92,9 @@ Speech::Speech(QObject* parent) :
             {
                 qDebug() << "Error:" << m_output->error();
             }
-            stopped();
-            break;
 
         case QAudio::IdleState:
             stopped();
-            if(m_currentBuffer)
-            {
-                m_currentBuffer->deleteLater();
-                m_currentBuffer = nullptr;
-            }
             break;
         default:
             break;
@@ -144,7 +137,6 @@ Speech::Speech(QObject* parent) :
 #if defined(PURPLE_AUDIOOUT)
         qDebug() << "New audio";
 
-#if defined(Q_OS_MAC)
         if(!m_buffer)
         {
             m_buffer = new QBuffer(this);
@@ -154,20 +146,13 @@ Speech::Speech(QObject* parent) :
         m_buffer->close();
 
         m_currentData = reply->readAll();
+        m_currentData = m_currentData.right(m_currentData.size() - 48);
         m_buffer->setData(m_currentData);
 
         if(!m_buffer->open(QBuffer::ReadOnly))
             qDebug() << "Buffer operations failed";
 
         m_output->start(m_buffer);
-#else
-        m_output->start(reply);
-
-        if(m_currentBuffer)
-            m_currentBuffer->deleteLater();
-
-        m_currentBuffer = reply;
-#endif
 #endif
     });
 }

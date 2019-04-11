@@ -46,10 +46,8 @@ class Speech : public QObject
     QSoundEffect* m_currentSound;
 #endif
 #if defined(PURPLE_AUDIOOUT)
-    QAudioOutput* m_output;
+    QAudioOutput* m_output = nullptr;
     QByteArray m_currentData;
-    QBuffer* m_buffer;
-
-    QNetworkReply* m_currentBuffer;
+    QBuffer* m_buffer = nullptr;
 #endif
 };
