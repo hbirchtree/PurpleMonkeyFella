@@ -1,5 +1,4 @@
 import QtQuick 2.0
-import QtMultimedia 5.12
 import dev.birchy.Purple 1.0
 
 Image {
@@ -22,6 +21,19 @@ Image {
     signal revertLook()
 
     signal say(string sentence)
+
+    signal startTalking(string sentence)
+    signal stopTalking()
+
+    onStartTalking: {
+        playAnimation(talk)
+    }
+    onStopTalking: {
+        if(talk.running) {
+            talk.stop()
+            revertLook()
+        }
+    }
 
     onSay: {
         if(busy)
@@ -399,7 +411,7 @@ Image {
 
         /* Say it */
         ScriptAction {
-            script: voice.say("Mr Worldwide")
+            script: say("Mr Worldwide")
         }
 
         /* Let it spin */

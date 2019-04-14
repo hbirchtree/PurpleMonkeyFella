@@ -29,6 +29,27 @@ Window {
         }
     }
 
+    ExternalCalls {
+        id: derp
+
+        onExternalEvent: {
+            console.log(command)
+
+            switch(command.substring(0, 1))
+            {
+            case 's':
+                monkeyFella.startTalking(command.substring(1, 100))
+                break;
+            case 'e':
+                monkeyFella.stopTalking()
+                break;
+            default:
+                console.log("Unhandled command: " + command.substring(1))
+                break;
+            }
+        }
+    }
+
     RandomEvents {
         id: random
         interval: 6000

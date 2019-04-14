@@ -21,3 +21,10 @@ This will:
  - Bundle all Qt shared libraries
  - Bundle all used QML modules
 
+# WebAssembly
+
+Follow similar instructions as the basic instructions, except installing the WebAssembly version of Qt 5.13.x or above.
+
+For setting up a toolchain, follow [this blog article](https://blog.qt.io/blog/2018/11/19/getting-started-qt-webassembly/), and add the Emscripten compiler to Qt Creator.
+
+Once this is done, open the QMake project (.pro file).
