@@ -43,6 +43,20 @@ Window {
             case 'e':
                 monkeyFella.stopTalking()
                 break;
+            case 'r':
+                console.log("switching RandomEvents state")
+                switch(command.substring(1))
+                {
+                case 'start':
+                    random.prepare();
+                    break;
+                case 'stop':
+                    random.stop();
+                    break;
+                default:
+                    break;
+                }
+                break;
             default:
                 console.log("Unhandled command: " + command.substring(1))
                 break;
@@ -101,7 +115,11 @@ Window {
     MouseArea {
         property point dragPos: Qt.point(0,0)
 
-        anchors.fill: parent
+        width: 150
+        x: (parent.width - width) / 2
+        height: parent.height
+        y: 0
+
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: {
             if(mouse.button === Qt.RightButton)

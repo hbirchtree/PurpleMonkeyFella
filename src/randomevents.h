@@ -27,6 +27,7 @@ signals:
 
 public slots:
     void prepare();
+    void stop();
 
     void setInterval(int interval)
     {

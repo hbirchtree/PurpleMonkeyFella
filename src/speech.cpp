@@ -16,6 +16,10 @@
 #include <QBuffer>
 #endif
 
+#if defined(Q_OS_WASM)
+#include <emscripten.h>
+#endif
+
 #include <QDebug>
 
 Speech::Speech(QObject* parent) :
@@ -141,9 +145,18 @@ void Speech::say(const QString& sentence)
     QString cpy = sentence;
 
     QNetworkRequest req(QUrl(
-        "http://bonzi.hackerspace-ntnu.no:23451/SAPI4.wav?text=" +
-        cpy.replace(" ", "%20") + "&voice=Bonzi&pitch=150"));
+        "https://api.birchy.dev/api/bonziProxy?say=" +
+                            QUrl::toPercentEncoding(cpy)));
 
     m_net.get(req);
+#endif
+
+#if defined(Q_OS_WASM)
+    std::string container = sentence.toStdString();
+    char* raw_str = const_cast<char*>(container.c_str());
+
+    EM_ASM_({
+               Module.popEvent($0, $1);
+    }, raw_str, container.size());
 #endif
 }

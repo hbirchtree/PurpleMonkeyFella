@@ -34,3 +34,8 @@ void RandomEvents::prepare()
 {
     m_timer->start();
 }
+
+void RandomEvents::stop()
+{
+    m_timer->stop();
+}

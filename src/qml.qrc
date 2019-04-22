@@ -171,5 +171,4 @@
         <file>../monkey_fella/random/suggestive_grin/1095.png</file>
         <file>../monkey_fella/random/suggestive_grin/1096.png</file>
     </qresource>
-    <qresource prefix="/monkey"/>
 </RCC>

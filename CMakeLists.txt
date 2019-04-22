@@ -8,7 +8,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 COMPONENTS Core Quick TextToSpeech Multimedia REQUIRED)
+find_package(Qt5 COMPONENTS Core Quick Multimedia REQUIRED)
 
 add_executable ( ${PROJECT_NAME}
     src/main.cpp
@@ -27,6 +27,5 @@ set_property ( TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14 )
 target_link_libraries ( ${PROJECT_NAME} PRIVATE
     Qt5::Core
     Qt5::Quick
-    Qt5::TextToSpeech
     Qt5::Multimedia
     )

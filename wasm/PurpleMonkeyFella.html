@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>PurpleMonkeyFella</title>
+    <style>
+      html, body { padding: 0; margin : 0; overflow:hidden; height: 100%; user-select: none; -moz-user-select: none; -ms-user-select: none; font-family: sans; }
+      /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+      canvas { border: 0px none; background-color: transparent; width: 400px; height: 320px; }
+      body {}
+      /* The contenteditable property is set to true for the canvas in order to support
+         clipboard events. Hide the resulting focus frame and set the cursor back to
+         the default cursor. */
+      canvas { outline: 0px solid transparent; cursor:default; }
+    </style>
+  </head>
+  <body onload="bonzi.load()">
+    <figure style="overflow:visible; display: flex; justify-content: stretch; margin: 0; height: 100%; width: 100%;" id="qtspinner">
+            <center style="margin-top:1.5em; line-height:150%">
+        <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
+      </center>
+
+      <p id="status"></p>
+      <p id="exitCode"></p>
+    </figure>
+    
+    <canvas id="qtcanvas" style="z-index: 1000;" oncontextmenu="event.preventDefault()" contenteditable="true"></canvas>
+
+    <audio id="voiceBox"></audio>
+
+    <script type="text/javascript" src="https://bonzi.birchy.dev/public/qtloader.js"></script>
+    <script type="text/javascript" src="https://bonzi.birchy.dev/public/Purple.js"></script>
+    <script type="text/javascript">
+        var bonzi = BonziLoader(document.querySelector('#voiceBox'), document.querySelector('canvas'));
+        bonzi.onSentence = function(str) {
+            bonzi.say(str);
+        };
+        bonzi.onBonziArrived = function() {
+            bonzi.say("Touch the trash, I fucking dare you!");
+            bonzi.disableRandom();
+        };
+    </script>
+  </body>
+</html>
