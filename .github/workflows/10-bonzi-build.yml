@@ -36,5 +36,5 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: purplefella
-        path: ${{ github.workspace }}/build/release
+        path: ${{ github.workspace }}/release
 
