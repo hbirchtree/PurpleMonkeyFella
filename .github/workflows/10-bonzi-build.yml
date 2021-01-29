@@ -24,8 +24,14 @@ jobs:
     - name: Adding assets
       run: |
           mkdir -p ${{ github.workspace}}/release/bin
-          cp ${{ github.workspace}}/build/*.{wasm,js} ${{ github.workspace }}/release/bin/
-          cp ${{ github.workspace }}/source/wasm/*.{png,html} ${{ github.workspace }}/release/
+          cp ${{ github.workspace}}/build/*.wasm ${{ github.workspace }}/release/bin/
+          cp ${{ github.workspace}}/build/*.js ${{ github.workspace }}/release/bin/
+          cp ${{ github.workspace }}/source/wasm/*.png ${{ github.workspace }}/release/
+          cp ${{ github.workspace }}/source/wasm/*.html ${{ github.workspace }}/release/
+          echo "Build directory:"
+          ls -R ${{ github.workspace }}/build
+          echo "Deploying the following artifact:"
+          ls -R ${{ github.workspace }}/release
     - name: Uploading artifacts
       uses: actions/upload-artifact@v2
       with:
