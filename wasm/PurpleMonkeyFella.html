@@ -8,38 +8,344 @@
       html, body { padding: 0; margin : 0; overflow:hidden; height: 100%; user-select: none; -moz-user-select: none; -ms-user-select: none; font-family: sans; }
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas { border: 0px none; background-color: transparent; width: 400px; height: 320px; }
-      body {}
+      body { background-color: #000; }
       /* The contenteditable property is set to true for the canvas in order to support
          clipboard events. Hide the resulting focus frame and set the cursor back to
          the default cursor. */
-      canvas { outline: 0px solid transparent; cursor:default; }
+      canvas { outline: 0px solid transparent; cursor:default; position: absolute; bottom: 32px; right: 0; }
+
+      .outset-border {
+          background-color: #c0c0c0;
+          border-color: #fff;
+          border-width: 2px;
+          border-style: outset;
+      }
+      .inset-border {
+          border-style: inset !important;
+      }
+      .vertical-aligned {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-end;
+          align-items: center;
+      }
+      .ass {
+          width: 64px;
+          height: 72px;
+          margin: 4px;
+
+          color: white;
+          font-size: 8px;
+          text-align: center;
+      }
+
+      @keyframes load-animation {
+          from { left: 0; }
+    	  to { left: -100%; }
+      }
+
+      #loading-bar {
+          animation: load-animation linear 2s infinite;
+      }
+
+      @keyframes flashing-anim {
+          0% { opacity: 1; };
+          50% { opacity: 0; };
+          100% { opacity: 1; };
+      }
+
+      .flashing {
+          opacity: 0;
+          animation: flashing-anim cubic-bezier(1,0,0,1) 0.4s infinite;
+      }
+
+      .cmd-text {
+          font-family: monospace;
+          text-size: 1.3em;
+          line-size: 1.5em;
+          color: white;
+      }
+
+      .flex-column {
+          display: flex;
+          flex-direction: column;
+      }
+
+      .auto-flex-box {
+          display: flex;
+          flex-direction: column;
+          margin: auto;
+      }
+
+      .hidden {
+          display: none;
+      }
+
+      .fullscreen {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+      }
+      .bottom-aligned {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+      }
+      .padded-icon {
+          height: 18px;
+          padding: 2px;
+          padding-left: 8px;
+          padding-right: 8px;
+          display: flex;
+          align-items: center;
+      }
+      .launcher-icon:hover {
+          background-color: #c0c0c0;
+          border-color: #fff;
+          border-width: 2px;
+          border-style: outset;
+          padding: 0;
+          padding-left: 6px;
+          padding-right: 6px;
+      }
+      .launcher-icon:active {
+          background-color: #c0c0c0;
+          border-color: #fff;
+          border-width: 2px;
+          border-style: inset;
+          padding: 0;
+          padding-left: 6px;
+          padding-right: 6px;
+      }
+      .taskbar-program {
+          height: 18px;
+          width: 10em;
+          justify-content: flex-start !important;
+          padding-left: 0.5em;
+          padding-right: 0.5em;
+          margin-left: 0.5em;
+      }
+      .start-button:active > .start-menu {
+          display: flex;
+      }
+      .start-menu-item {
+          height: 3em;
+          display: flex;
+          align-items: center;
+          padding-left: 8px;
+          padding-right: 8px;
+      }
+      .start-menu-item:hover {
+          background-color: #000070;
+          color: white;
+      }
     </style>
   </head>
-  <body onload="bonzi.load()">
-    <figure style="overflow:visible; display: flex; justify-content: stretch; margin: 0; height: 100%; width: 100%;" id="qtspinner">
-            <center style="margin-top:1.5em; line-height:150%">
+  <body onload="boot()">
+
+    
+      <div id="desktop" class="">
+        <div id="icons" class="fullscreen" style="bottom: 28px; height: auto; display: flex; flex-direction: column; flex-flow: column wrap; align-content: flex-start; background-color: #00807F; ">
+            <div class="ass" style="position: absolute; right: 0; bottom: 0;">
+                <img src="trash.png" width="48" height="48">
+            <p>Trash</p>
+        </div>
+        </div>
+
+        <div class="outset-border bottom-aligned vertical-aligned" style="height: 26px; width: 100%; font-size: 12px; justify-content: space-between;">
+            <!-- Windows Start button -->
+            <!--<a href="https://birchy.dev">-->
+            <div style="flex-grow: 1; display: flex; align-items: center;">
+                <div class="start-button outset-border vertical-aligned launcher-icon start-button" style="width: 50px; height: 18px; color: black; padding: 0 !important; padding-right: 0.3em !important; margin: 2px;">
+                    <div class="start-menu hidden bottom-aligned outset-border" style="width: 15em; height: 30em; left: -2px; bottom: 28px;">
+                        <div class="flex-column" style="height: 100%; width: 2.5em; background-image: linear-gradient(to top, blue, #000070 50%); color: white; justify-content: flex-end;">
+                            <div style="font-size: 2em; transform: rotate(-90deg); margin-bottom: 0.5em;"><b>Windows</b>98</div>
+                        </div>
+                        <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: stretch;">
+                            <span class="start-menu-item">Internet Exploder</span>
+                            <span class="start-menu-item">America OnLine</span>
+                            <span class="start-menu-item">Netscape</span>
+                            <div class="inset-border" style="height: 0; border-width: 1px; margin-left: 2px; margin-right: 2px;"></div>
+                            <span class="start-menu-item">Programs</span>
+                            <span class="start-menu-item">Favorites</span>
+                            <span class="start-menu-item">Documents</span>
+                            <span class="start-menu-item">Settings</span>
+                            <span class="start-menu-item">Find</span>
+                            <span class="start-menu-item">Help</span>
+                            <span class="start-menu-item">Run...</span>
+                            <div class="inset-border" style="height: 0; border-width: 1px; margin-left: 2px; margin-right: 2px;"></div>
+                            <span class="start-menu-item">Log Off Bonzi...</span>
+                            <span class="start-menu-item">Shut Down...</span>
+                        </div>
+                    </div>
+                    <img src="windows.png" style="height: 18px;">
+                    Start
+                </div>
+
+                <div class="outset-border" style="height: 18px; margin-left: 0.3em; margin-right: 0.3em;"></div>
+
+                <span class="padded-icon launcher-icon"><img src="favicon.png" height="16"/></span>
+                <span class="padded-icon launcher-icon">&#x1f310;</span>
+                <span class="padded-icon launcher-icon">&#x1f310;</span>
+
+                <div class="outset-border" style="height: 18px; margin-left: 0.3em; margin-right: 0.3em;"></div>
+
+                <span class="inset-border vertical-aligned taskbar-program"><img src="favicon.png" height="16"/>  BonziBuddy</span>
+                <span class="outset-border vertical-aligned taskbar-program"><img src="favicon.png" height="16"/> Internet Explorer</span>
+                <span class="outset-border vertical-aligned taskbar-program"><img src="favicon.png" height="16"/> AOL</span>
+            </div>
+            <!--</a>-->
+            <!-- Clock -->
+            <div class="outset-border inset-border vertical-aligned" style="height: 18px; padding-left: 10px; padding-right: 8px; margin: 2px;">
+                <span onclick="say('You can not mute me')" class="padded-icon">&#128266;</span>
+                00:00 PM
+            </div>
+        </div>
+    </div>
+
+    <figure class="fullscreen" style="overflow:visible; display: flex; justify-content: stretch; background-color: black;" id="qtspinner">
+      <img src="boot.jpg" id="bootImage" class="hidden fullscreen">
+
+      <p id="biosText" class="cmd-text" style="padding: 1em;"><b>
+          American   </br>
+          Megatrends<span id="bioStage1" class="hidden">
+              </br></br>
+              Check System Health OK     </br>
+              CPI ID:068A Patch ID:0001  </br>
+              Pentium III - 1.0B GHz     </br>
+              Checking NVRAM..Update <span id="bioStage2" class="hidden">OK! </br>
+                  1572864KB <span id="bioStage3" class="hidden">OK </br>
+                      </br>
+                      Hit DEL if you want to run SETUP</span></span></span><span class="flashing">_</span>
+          <span class="cmd-text bottom-aligned" style="padding: 1em;">
+              (C) American Megatrends, Inc. </br>
+          </span>
+      </b></p>
+      
+      <center style="margin-top:1.5em; line-height:150%">
         <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
       </center>
 
-      <p id="status"></p>
-      <p id="exitCode"></p>
+      <div id="loading-bar" class="hidden bottom-aligned" style="height: 16px; width: 200%; background-image: repeating-linear-gradient(to right, #497fbf, #aebbc4 25%, #497fbf 50%, #aebbc4 75%, #497fbf 100%);"></div>
+
+      <div id="errorScreen" class="flex-column cmd-text hidden" style="justify-items: center; background-color: #0000A0; padding: 5em; flex-grow: 1; z-index: 100;">
+          <b class="auto-flex-box" style="max-width: 41em;">
+              <center><mark style="background-color: white; padding-left: 0.5em; padding-right: 0.5em; padding-top: 0.1em; padding-bottom: 0.1em;">Windows</mark></center>
+              <p>A fatal exception <span id="exitCode">0E</span> has occured at 0000:00000000 in WASM PurpleMonkeyFella(0xFF)
+              * 0x7F009371. <span id="status"></span> The current application will be terminated.</p>
+
+              <p style="margin-left: 2em;">
+                  * WebAssembly probably failed to load or execute </br>
+                  * WebAssembly is not stable on Android or iOS, so try it on desktop instead
+              </p>
+          </b>
+      </div>
     </figure>
     
     <canvas id="qtcanvas" style="z-index: 1000;" oncontextmenu="event.preventDefault()" contenteditable="true"></canvas>
 
     <audio id="voiceBox"></audio>
+   
+    <script type='text/javascript'>
+        function say(sentence) {
+            var voiceBox = document.querySelector('#voiceBox');
+            voiceBox.src = "https://api.birchy.dev/bonziProxy?say=" + sentence
+            voiceBox.play()
+            Module.push_event("s");
+        }
 
-    <script type="text/javascript" src="https://bonzi.birchy.dev/public/qtloader.js"></script>
-    <script type="text/javascript" src="https://bonzi.birchy.dev/public/Purple.js"></script>
-    <script type="text/javascript">
-        var bonzi = BonziLoader(document.querySelector('#voiceBox'), document.querySelector('canvas'));
-        bonzi.onSentence = function(str) {
-            bonzi.say(str);
-        };
-        bonzi.onBonziArrived = function() {
-            bonzi.say("Touch the trash, I fucking dare you!");
-            bonzi.disableRandom();
-        };
+        function init() {
+            var spinner = document.getElementById('qtspinner');
+            var canvas = document.getElementById('qtcanvas');
+            var status = document.getElementById('status');
+            var exitCode = document.getElementById('exitCode');
+            var errorScreen = document.getElementById('errorScreen');
+
+            var qtLoader = QtLoader({
+                canvasElements : [canvas],
+                showLoader: function(loaderStatus) {
+                    spinner.style.display = 'flex';
+                    canvas.style.display = 'none';
+                },
+                showError: function(errorText) {
+                    setTimeout(function() {
+                        status.innerHTML = errorText + ".";
+                        spinner.style.display = 'flex';
+                        errorScreen.style.display = 'flex';
+                        canvas.style.display = 'none';
+                    }, 2000);
+                },
+                showExit: function() {
+                    if (qtLoader.exitCode !== undefined)
+                        exitCode.innerHTML = qtLoader.exitCode;
+                    if (qtLoader.exitText !== undefined)
+                        status.innerHTML = qtLoader.exitText;
+                    errorScreen.style.display = 'flex';
+                    spinner.style.display = 'flex';
+                    canvas.style.display = 'none';
+                },
+                showCanvas: function() {
+                    spinner.style.display = 'none';
+                    canvas.style.display = 'block';
+                    document.querySelector('#desktop').style.display = 'block';
+                    document.querySelector('figure').style.display = 'none';
+                    document.querySelector('#voiceBox').addEventListener('ended', function() {
+                      Module.push_event("e");
+                    });
+                    setTimeout(function() {say("Welcome back expand dong, I have tons of jokes ready");}, 4000)
+                },
+            });
+            qtLoader.loadEmscriptenModule("/bin/PurpleMonkeyFella");
+
+            var icons = document.getElementById("icons");
+            [
+                  {name: "My Computer", img: "computer.png" },
+                  {name: "My Documents", img: "docs.png" },
+                  {name: "Network Neighborhood", img: "network.png" },
+                  {name: "My Briefcase", img: "briefcase.png" },
+                  {name: "Porn", img: "directory.png" },
+            ].forEach(function(icon) {
+                var container = document.createElement("div");
+                var image = document.createElement("img");
+                var par = document.createElement("p");
+
+                container.classList.add("ass");
+                image.src = icon.img;
+                image.width = "48";
+                image.height = "48";
+                par.innerText = icon.name;
+
+                container.appendChild(image); container.appendChild(par);
+                icons.appendChild(container);
+            });
+        }
+
+        function boot() {
+            var bootImage = document.getElementById('bootImage');
+            var loadingBar = document.getElementById('loading-bar');
+            var biosText = document.getElementById('biosText');
+            var bioStage1 = document.getElementById('bioStage1');
+            var bioStage2 = document.getElementById('bioStage2');
+            var bioStage3 = document.getElementById('bioStage3');
+
+            setTimeout(function() { bioStage1.style.display = 'inline' }, 1000);
+            setTimeout(function() { bioStage2.style.display = 'inline' }, 2000);
+            setTimeout(function() { bioStage3.style.display = 'inline' }, 3000);
+
+            setTimeout(function() {
+                biosText.style.display = 'none';
+                bootImage.style.display = 'block';
+                loadingBar.style.display = 'block';
+                init();
+            }, 5000);
+        }
     </script>
+    <script type="text/javascript" src="/bin/qtloader.js"></script>
   </body>
 </html>

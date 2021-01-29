@@ -1,0 +1,34 @@
+name: Purple Monkey Fella
+'on':
+  push:
+    branches:
+    - master
+    - testing
+    - feature**
+
+jobs:
+  Wasm:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: source
+    - name: Make build directory
+      run: mkdir ${{ github.workspace }}/build
+    - name: Listing source files
+      run: docker run --rm -v ${{ github.workspace }}/source:/src -v ${{ github.workspace }}/build:/build --workdir /build madmanfred/qt-webassembly:qt5.14 ls /src /build
+    - name: Qmake
+      run: docker run --rm -v ${{ github.workspace }}/source:/src -v ${{ github.workspace }}/build:/build --workdir /build madmanfred/qt-webassembly:qt5.14 qmake /src
+    - name: Build
+      run: docker run --rm -v ${{ github.workspace }}/source:/src -v ${{ github.workspace }}/build:/build --workdir /build madmanfred/qt-webassembly:qt5.14 make -j4
+    - name: Adding assets
+      run: |
+          mkdir -p ${{ github.workspace}}/release/bin
+          cp ${{ github.workspace}}/build/*.{wasm,js} ${{ github.workspace }}/release/bin/
+          cp ${{ github.workspace }}/source/wasm/*.{png,html} ${{ github.workspace }}/release/
+    - name: Uploading artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: purplefella
+        path: ${{ github.workspace }}/build/release
+
