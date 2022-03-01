@@ -1,19 +1,15 @@
 #include "speech.h"
 
+#if defined(PURPLE_AUDIOOUT)
+#include <QAudioDevice>
+#include <QAudioFormat>
+#include <QAudioOutput>
+#include <QBuffer>
+#include <QMediaPlayer>
+#endif
+
 #if !defined(PURPLE_NO_NETWORK)
 #include <QNetworkReply>
-#include <QNetworkRequest>
-#endif
-
-#if defined(PURPLE_QSOUND)
-#include <QFile>
-#include <QSoundEffect>
-#include <QTemporaryFile>
-#endif
-
-#if defined(PURPLE_AUDIOOUT)
-#include <QAudioFormat>
-#include <QBuffer>
 #endif
 
 #if defined(Q_OS_WASM)
@@ -22,141 +18,76 @@
 
 #include <QDebug>
 
-Speech::Speech(QObject* parent) :
-    QObject(parent)
-#if !defined(PURPLE_NO_NETWORK)
-    ,
-    m_net(this)
-#endif
+Speech::Speech(QObject* parent)
+    : QObject(parent)
 #if defined(PURPLE_AUDIOOUT)
-    ,
-    m_output(nullptr)
+    , m_networkManager(new QNetworkAccessManager(this))
+    , m_player(new QMediaPlayer(this))
+    , m_bufferDevice(new QBuffer(&m_audioBuffer, this))
 #endif
 {
-#if defined(PURPLE_AUDIOOUT)
-    QAudioFormat fmt;
-    fmt.setByteOrder(QAudioFormat::LittleEndian);
-    fmt.setChannelCount(1);
-    fmt.setCodec("audio/pcm");
-    fmt.setSampleRate(11025);
-    fmt.setSampleType(QAudioFormat::SignedInt);
-    fmt.setSampleSize(16);
+    m_networkManager->setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);
 
-    QAudioDeviceInfo dev = QAudioDeviceInfo::defaultOutputDevice();
+    m_player->setAudioOutput(new QAudioOutput(QAudioDevice(), this));
 
-    if(!dev.isFormatSupported(fmt)) {
-        qDebug() << "Unsupported audio format";
-
-        fmt.setSampleRate(22050);
-
-        if(dev.isFormatSupported(fmt))
-            qDebug() << "pcm" << fmt.sampleRate() << fmt.sampleSize() << fmt.sampleType();
-
-        fmt.setSampleRate(44100);
-
-        if(dev.isFormatSupported(fmt))
-            qDebug() << "pcm" << fmt.sampleRate() << fmt.sampleSize() << fmt.sampleType();
-
-        fmt.setSampleType(QAudioFormat::UnSignedInt);
-
-        if(dev.isFormatSupported(fmt))
-            qDebug() << "pcm" << fmt.sampleRate() << fmt.sampleSize() << fmt.sampleType();
-    }
-
-    m_output = new QAudioOutput(fmt, this);
-
-    connect(m_output, &QAudioOutput::stateChanged, [&](QAudio::State state) {
-        qDebug() << state;
-        switch(state)
-        {
-        case QAudio::ActiveState:
-            started();
-            break;
-        case QAudio::StoppedState:
-            if(m_output->error() != QAudio::NoError)
-            {
-                qDebug() << "Error:" << m_output->error();
-            }
-
-        case QAudio::IdleState:
-            stopped();
-            break;
-        default:
-            break;
-        }
+    connect(m_player, &QMediaPlayer::playbackStateChanged, this, &Speech::runningChanged);
+    connect(m_player, &QMediaPlayer::errorOccurred, this, &Speech::onMediaPlayerError);
+    connect(m_player, &QMediaPlayer::mediaStatusChanged, [](QMediaPlayer::MediaStatus status) {
+        qDebug() << "Media status" << status;
     });
-#endif
 
-#if !defined(PURPLE_NO_NETWORK)
-    connect(
-        &m_net, &QNetworkAccessManager::finished, [&](QNetworkReply* reply) {
-            if(reply->error() != QNetworkReply::NoError)
-            {
-                qDebug("Error: %s", reply->errorString().toStdString().c_str());
-                qDebug() << reply->readAll().size();
-                reply->deleteLater();
-                return;
-            }
-
-            if(!reply->header(QNetworkRequest::ContentTypeHeader)
-                    .toString()
-                    .startsWith("audio/"))
-            {
-                qDebug("Invalid data type");
-                reply->deleteLater();
-                return;
-            }
-
-#if defined(PURPLE_AUDIOOUT)
-            qDebug() << "New audio";
-
-            if(!m_buffer)
-            {
-                m_buffer = new QBuffer(this);
-            }
-
-            m_buffer->close();
-
-            m_currentData = reply->readAll();
-            m_currentData = m_currentData.right(m_currentData.size() - 48);
-            m_buffer->setData(m_currentData);
-
-            if(!m_buffer->open(QBuffer::ReadOnly))
-                qDebug() << "Buffer operations failed";
-
-            m_output->start(m_buffer);
-#endif
-        });
-#endif
+    connect(m_networkManager, &QNetworkAccessManager::finished, this, &Speech::onSampleReceived);
 }
 
 Speech::~Speech()
 {
 }
 
-void Speech::say(const QString& sentence)
+bool Speech::running() const
 {
 #if defined(PURPLE_AUDIOOUT)
-    m_output->stop();
-    m_output->reset();
+    return m_player->playbackState() == QMediaPlayer::PlayingState;
+#else
+    return false;
 #endif
+}
 
-#if !defined(PURPLE_NO_NETWORK)
-    QString cpy = sentence;
-
-    QNetworkRequest req(QUrl(
-        "https://api.birchy.dev/api/bonziProxy?say=" +
-                            QUrl::toPercentEncoding(cpy)));
-
-    m_net.get(req);
-#endif
-
-#if defined(Q_OS_WASM)
+void Speech::say(const QString& sentence)
+{
+    qDebug() << "Requesting line '" << sentence << "'";
+#if defined(PURPLE_AUDIOOUT)
+    QNetworkRequest voiceRequest(QUrl(
+        "https://api.birchy.dev/sapi/speak.wav?voice=Bonzibuddy&speed=140&pitch=157&text=" +
+                            QUrl::toPercentEncoding(sentence)));
+    m_networkManager->get(voiceRequest);
+#elif defined(Q_OS_WASM)
     std::string container = sentence.toStdString();
     char* raw_str = const_cast<char*>(container.c_str());
 
     EM_ASM_({
                Module.popEvent($0, $1);
     }, raw_str, container.size());
+#else
+    #error No Speech backend
 #endif
+}
+
+void Speech::onSampleReceived(QNetworkReply *reply)
+{
+    m_player->stop();
+
+    qDebug() << "Got response from" << reply->url() << reply->error();
+
+    m_player->setSourceDevice(reply, reply->url());
+    m_player->setPosition(0);
+    m_player->play();
+
+    connect(m_player, &QMediaPlayer::sourceChanged,
+            reply, &QObject::deleteLater,
+            Qt::SingleShotConnection);
+}
+
+void Speech::onMediaPlayerError(QMediaPlayer::Error error, const QString &errorString)
+{
+    qDebug() << "MediaPlayer Error:" << error << errorString;
 }

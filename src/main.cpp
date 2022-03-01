@@ -1,3 +1,7 @@
+#include <QtPlugin>
+Q_IMPORT_PLUGIN(QtQmlPlugin)
+Q_IMPORT_PLUGIN(QtQuick2Plugin)
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -38,6 +42,7 @@ int main(int argc, char* argv[])
     qmlRegisterType<RandomEvents>("dev.birchy.Purple", 1, 0, "RandomEvents");
     qmlRegisterType<ExternalCalls>("dev.birchy.Purple", 1, 0, "ExternalCalls");
 
+    engine.addImportPath("qrc:/imports");
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     if(engine.rootObjects().isEmpty())

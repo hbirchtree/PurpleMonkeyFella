@@ -1,7 +1,9 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Dialogs 1.3
 import QtQuick.Window 2.12
+
+import QtQuick.Dialogs
+
 import dev.birchy.Purple 1.0
 
 Window {
@@ -16,17 +18,28 @@ Window {
     height: 320
     title: qsTr("Not a Bonzi Revolution")
 
-    onTitleChanged: {
-        /* I want to get off Mr Bones' Wild Ride */
-        monkeyFella.ohLawdHeComin()
-    }
-
     MonkeyFella {
         id: monkeyFella
+        anchors.fill: parent
+    }
 
-        onOhLawdHeGone: {
-            random.prepare();
+    Timer {
+        id: flyIn
+        interval: 200
+        onTriggered: {
+            monkeyFella.state = "heCometh";
         }
+    }
+    Timer {
+        id: openerLine
+        interval: 2500
+        onTriggered: {
+            monkeyFella.say("Hello expand dong, I cum and piss, now I'm a roflcopter, soisoisoisoisoisoi");
+        }
+    }
+    onTitleChanged: {
+        flyIn.start();
+        openerLine.start();
     }
 
     ExternalCalls {
@@ -68,27 +81,29 @@ Window {
         id: random
         interval: 6000
         onNewEvent: {
-            /* TODO: Pick random event */
+            if (monkeyFella.state !== "")
+                return;
 
             var anims = [
-                        monkeyFella.animSunglasses,
-                        monkeyFella.animChuckle,
-                        monkeyFella.animMrWorldwide,
-                        monkeyFella.animHush,
-                        monkeyFella.animGrin,
+                        "grinning",
+                        "blinking",
+                        "doubleBlink",
+                        "sunglasses",
+                        "chuckle",
+                        "hushing",
+                        "mrWorldwide",
                     ];
 
-            monkeyFella.playAnimation(
-                        anims[random.randRange(0, anims.length - 1)])
+            monkeyFella.state = anims[random.randRange(0, anims.length - 1)];
 
-            random.interval = random.randRange(5 * 1000, 1 * 60 * 1000)
-            console.log("next event in ", interval)
+            random.interval = random.randRange(5000, 5000);
+            console.log("next event in ", interval);
         }
     }
 
     Dialog {
         id: sayBox
-        standardButtons: StandardButton.Ok
+//        standardButtons: StandardButton.Ok
         onAccepted: {
             monkeyFella.say(sayTextField.text)
             sayTextField.text = ""
@@ -121,7 +136,7 @@ Window {
         y: 0
 
         acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: {
+        onClicked: (mouse) => {
             if(mouse.button === Qt.RightButton)
                 menu.popup()
         }
@@ -152,7 +167,7 @@ Window {
                 text: "Tell me a joke"
                 onClicked: {
                     monkeyFella.say("What did the beaver say to the tree." +
-                              " ... Nice gnawing you!")
+                                    " ... Nice gnawing you!")
                 }
             }
             MenuItem {

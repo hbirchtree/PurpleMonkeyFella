@@ -2,48 +2,43 @@
 
 #include <QObject>
 
-#if !defined(PURPLE_NO_MEDIA)
-#define PURPLE_AUDIOOUT
-#endif
-
-#if defined(PURPLE_AUDIOOUT)
-#include <QAudioOutput>
-#endif
-
 #if !defined(PURPLE_NO_NETWORK)
 #include <QNetworkAccessManager>
 #endif
 
-class QSoundEffect;
+#if defined(PURPLE_AUDIOOUT)
+#include <QMediaPlayer>
+#endif
+
+class QMediaPlayer;
 class QBuffer;
 
 class Speech : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(bool running READ running NOTIFY runningChanged)
   public:
     explicit Speech(QObject* parent = nullptr);
     virtual ~Speech();
 
+    bool running() const;
+
   signals:
-    void started();
-    void stopped();
+    void runningChanged();
 
   public slots:
     void say(QString const& sentence);
 
   private slots:
-#if defined(PURPLE_VOICE)
-    void voiceStateChange(QTextToSpeech::State state);
-#endif
+    void onSampleReceived(QNetworkReply *reply);
+    void onMediaPlayerError(QMediaPlayer::Error error, QString const& errorString);
 
   private:
-#if !defined(PURPLE_NO_NETWORK)
-    QNetworkAccessManager m_net;
-#endif
-
 #if defined(PURPLE_AUDIOOUT)
-    QAudioOutput* m_output = nullptr;
-    QByteArray m_currentData;
-    QBuffer* m_buffer = nullptr;
+    QNetworkAccessManager* m_networkManager{nullptr};
+    QMediaPlayer* m_player{nullptr};
+    QBuffer* m_bufferDevice{nullptr};
+    QByteArray m_audioBuffer;
 #endif
 };
